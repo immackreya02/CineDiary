@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Film Collections & Lists — CineDiary</title>
+  <style>
+    :root { --bg: #140A0D; --card: #1F0E15; --border: #3A2029; --gold: #D4A94C; --text: #F3E9DC; --muted: #B39A9E; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+    .navbar { background: #190B10; border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-family: Georgia, serif; font-size: 1.5rem; color: var(--gold); text-decoration: none; font-weight: bold; }
+    .nav-links a { color: var(--muted); text-decoration: none; margin-left: 1.5rem; font-weight: 500; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+    .form-box { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; }
+    .btn { background: var(--gold); color: #140A0D; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; }
+    .list-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .movie-strip { display: flex; gap: 1rem; overflow-x: auto; margin-top: 1rem; padding-bottom: 0.5rem; }
+    .poster-xs { width: 90px; height: 130px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
+    input[type="text"] { width: 100%; padding: 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); box-sizing: border-box; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="/" class="brand">🎬 CineDiary</a>
+    <div class="nav-links">
+      <a href="/">Movies</a>
+      <a href="/diary">My Diary</a>
+      <a href="/lists" class="active">Lists</a>
+      <a href="/stats">Stats</a>
+      <a href="/profile">👤 {{ current_user.name }}</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1 style="font-family: Georgia, serif; color: var(--gold);">Custom Film Collections</h1>
+    <p style="color: var(--muted); margin-bottom: 2rem;">Curate and organize customized movie watchlists.</p>
+
+    <!-- Create New List Form -->
+    <div class="form-box">
+      <h3 style="color: var(--gold); margin-top: 0;">Create New Collection</h3>
+      <form action="/lists/create" method="POST">
+        <input type="text" name="title" placeholder="Collection Title (e.g., Top 10 Sci-Fi Films)" required>
+        <input type="text" name="description" placeholder="Short description for this list...">
+        <button type="submit" class="btn">Create Collection</button>
+      </form>
+    </div>
+
+    <!-- User Collections List -->
+    {% if lists %}
+      {% for lst in lists %}
+        <div class="list-card">
+          <h2 style="color: var(--gold); margin: 0 0 0.4rem 0;">{{ lst.title }}</h2>
+          <p style="color: var(--muted); margin: 0; font-size: 0.9rem;">{{ lst.description or 'Custom movie collection' }}</p>
+          
+          <div class="movie-strip">
+            {% if lst.movies %}
+              {% for m in lst.movies %}
+                <a href="/movie/{{ m._id }}" title="{{ m.title }}">
+                  <img src="{{ m.posterUrl }}" class="poster-xs" alt="{{ m.title }}">
+                </a>
+              {% endfor %}
+            {% else %}
+              <p style="color: var(--muted); font-size: 0.85rem;">No films added to this collection yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div style="background: var(--card); border: 1px solid var(--border); padding: 3rem; text-align: center; border-radius: 12px; color: var(--muted);">
+        <p>No film collections created yet. Use the form above to create your first collection!</p>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cinema Analytics & Stats — CineDiary</title>
+  <style>
+    :root { --bg: #140A0D; --card: #1F0E15; --border: #3A2029; --gold: #D4A94C; --text: #F3E9DC; --muted: #B39A9E; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+    .navbar { background: #190B10; border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-family: Georgia, serif; font-size: 1.5rem; color: var(--gold); text-decoration: none; font-weight: bold; }
+    .nav-links a { color: var(--muted); text-decoration: none; margin-left: 1.5rem; font-weight: 500; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 12px; text-align: center; }
+    .stat-val { font-size: 2.5rem; font-family: Georgia, serif; color: var(--gold); font-weight: bold; margin-top: 0.4rem; }
+    .stat-label { color: var(--muted); font-size: 0.85rem; text-transform: uppercase; }
+    .table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .table th, .table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .table th { background: #190B10; color: var(--gold); font-size: 0.85rem; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="/" class="brand">🎬 CineDiary</a>
+    <div class="nav-links">
+      <a href="/">Movies</a>
+      <a href="/diary">My Diary</a>
+      <a href="/lists">Lists</a>
+      <a href="/stats" class="active">Stats</a>
+      <a href="/profile">👤 {{ current_user.name }}</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1 style="font-family: Georgia, serif; color: var(--gold);">Cinema Analytics & Insights</h1>
+    <p style="color: var(--muted); margin-bottom: 2rem;">Personal viewing metrics aggregated across your diary entries.</p>
+
+    <!-- Key Metric Cards -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Watched</div>
+        <div class="stat-val">{{ stats.totalWatched }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Watchlist Items</div>
+        <div class="stat-val">{{ stats.watchlistCount }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Average Rating</div>
+        <div class="stat-val">★ {{ stats.avgRating }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Favorite Genre</div>
+        <div class="stat-val" style="font-size: 1.5rem; margin-top: 1rem;">{{ stats.favoriteGenre }}</div>
+      </div>
+    </div>
+
+    <!-- Genre Breakdown Table -->
+    <h3 style="color: var(--gold); font-family: Georgia, serif;">Genre Breakdown</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Genre</th>
+          <th>Movies Watched</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if stats.genreBreakdown %}
+          {% for item in stats.genreBreakdown %}
+            <tr>
+              <td><strong>{{ item.genre }}</strong></td>
+              <td>{{ item.count }} films</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="2" style="color: var(--muted); text-align: center;">Log movies in your diary to generate genre analytics!</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

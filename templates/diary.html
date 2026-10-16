@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Movie Diary — CineDiary</title>
+  <style>
+    :root { --bg: #140A0D; --card: #1F0E15; --border: #3A2029; --gold: #D4A94C; --text: #F3E9DC; --muted: #B39A9E; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+    .navbar { background: #190B10; border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-family: Georgia, serif; font-size: 1.5rem; color: var(--gold); text-decoration: none; font-weight: bold; }
+    .nav-links a { color: var(--muted); text-decoration: none; margin-left: 1.5rem; font-weight: 500; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+    .diary-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; display: flex; gap: 1.5rem; align-items: center; }
+    .poster-sm { width: 70px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
+    .btn { background: var(--gold); color: #140A0D; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: bold; cursor: pointer; text-decoration: none; }
+    .btn-danger { background: #3B151E; color: #F87171; border: 1px solid #8B1E3F; }
+    .stars { color: var(--gold); font-size: 1.1rem; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="/" class="brand">🎬 CineDiary</a>
+    <div class="nav-links">
+      <a href="/">Movies</a>
+      <a href="/diary" class="active">My Diary</a>
+      <a href="/lists">Lists</a>
+      <a href="/stats">Stats</a>
+      <a href="/profile">👤 {{ current_user.name }}</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1 style="font-family: Georgia, serif; color: var(--gold);">My Personal Movie Diary</h1>
+    <p style="color: var(--muted); margin-bottom: 2rem;">A record of every film you have watched, rated, and reviewed.</p>
+
+    {% if entries %}
+      {% for entry in entries %}
+        <div class="diary-item">
+          <img src="{{ entry.movie.posterUrl }}" class="poster-sm" alt="{{ entry.movie.title }}">
+          <div style="flex: 1;">
+            <h3 style="margin: 0 0 0.4rem 0;"><a href="/movie/{{ entry.movie._id }}" style="color: var(--text); text-decoration: none;">{{ entry.movie.title }}</a> <span style="font-weight: normal; color: var(--muted); font-size: 0.9rem;">({{ entry.movie.releaseYear }})</span></h3>
+            <div class="stars">{% if entry.rating %}★ {{ entry.rating }}/5{% else %}Unrated{% endif %}</div>
+            {% if entry.review %}
+              <p style="margin: 0.5rem 0 0 0; color: var(--muted); font-style: italic;">"{{ entry.review }}"</p>
+            {% endif %}
+            <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem;">Watched on {{ entry.watchedDate }}</p>
+          </div>
+          <div>
+            <form action="/diary/delete/{{ entry._id }}" method="POST" onsubmit="return confirm('Delete this entry?');">
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div style="background: var(--card); border: 1px solid var(--border); padding: 3rem; text-align: center; border-radius: 12px; color: var(--muted);">
+        <p style="font-size: 1.2rem;">You haven't logged any movies to your diary yet.</p>
+        <a href="/" class="btn" style="margin-top: 1rem;">Explore & Log Movies</a>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

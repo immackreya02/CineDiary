@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ movie.title }} — CineDiary Details</title>
+  <style>
+    :root { --bg: #140A0D; --card: #1F0E15; --border: #3A2029; --gold: #D4A94C; --text: #F3E9DC; --muted: #B39A9E; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+    .navbar { background: #190B10; border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-family: Georgia, serif; font-size: 1.5rem; color: var(--gold); text-decoration: none; font-weight: bold; }
+    .nav-links a { color: var(--muted); text-decoration: none; margin-left: 1.5rem; font-weight: 500; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+    .backdrop-banner { width: 100%; height: 350px; background-size: cover; background-position: center; border-radius: 16px; margin-bottom: 2rem; border: 1px solid var(--border); }
+    .details-grid { display: grid; grid-template-columns: 260px 1fr; gap: 2rem; }
+    .poster-img { width: 100%; border-radius: 12px; border: 1px solid var(--border); }
+    .btn { background: var(--gold); color: #140A0D; border: none; padding: 0.7rem 1.4rem; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; font-size: 1rem; }
+    .form-box { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 12px; margin-top: 1.5rem; }
+    .form-group { margin-bottom: 1rem; }
+    label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.4rem; }
+    select, input[type="text"], textarea { width: 100%; padding: 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); box-sizing: border-box; }
+    .tag { background: #3A2029; color: var(--gold); padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.8rem; margin-right: 0.4rem; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="/" class="brand">🎬 CineDiary</a>
+    <div class="nav-links">
+      <a href="/">Movies</a>
+      {% if current_user %}
+        <a href="/diary">My Diary</a>
+        <a href="/lists">Lists</a>
+        <a href="/stats">Stats</a>
+        <a href="/profile">👤 {{ current_user.name }}</a>
+        <a href="/logout">Logout</a>
+      {% else %}
+        <a href="/login" class="btn">Sign In</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="container">
+    {% if movie.backdropUrl %}
+      <div class="backdrop-banner" style="background-image: linear-gradient(to bottom, rgba(20,10,13,0.2), rgba(20,10,13,0.9)), url('{{ movie.backdropUrl }}');"></div>
+    {% endif %}
+
+    <div class="details-grid">
+      <div>
+        <img src="{{ movie.posterUrl }}" class="poster-img" alt="{{ movie.title }}">
+      </div>
+
+      <div>
+        <h1 style="font-family: Georgia, serif; color: var(--gold); margin-top: 0;">{{ movie.title }} <span style="font-weight: normal; color: var(--muted);">({{ movie.releaseYear }})</span></h1>
+        
+        {% if movie.tagline %}
+          <p style="font-style: italic; color: var(--gold); font-size: 1.1rem;">"{{ movie.tagline }}"</p>
+        {% endif %}
+
+        <div style="margin: 1rem 0;">
+          {% for genre in movie.genres %}
+            <span class="tag">{{ genre }}</span>
+          {% endfor %}
+          <span style="color: var(--muted); margin-left: 1rem;">⏱️ {{ movie.durationMinutes }} mins</span>
+          <span style="color: var(--gold); margin-left: 1rem;">★ {{ movie.overallRating }}/5</span>
+        </div>
+
+        <p style="line-height: 1.6; color: var(--text);">{{ movie.description }}</p>
+
+        <p><strong>Director:</strong> {{ movie.director }}</p>
+        <p><strong>Cast:</strong> {{ movie.cast | join(', ') }}</p>
+
+        <!-- Log to Diary Form -->
+        {% if current_user %}
+          <div class="form-box">
+            <h3 style="color: var(--gold); margin-top: 0;">Log to My Diary</h3>
+            <form action="/diary/add" method="POST">
+              <input type="hidden" name="movieId" value="{{ movie._id }}">
+              
+              <div class="form-group">
+                <label>Your Rating (1 to 5 Stars)</label>
+                <select name="rating">
+                  <option value="5" {% if user_entry and user_entry.rating == 5 %}selected{% endif %}>★★★★★ (5 Stars)</option>
+                  <option value="4" {% if user_entry and user_entry.rating == 4 %}selected{% endif %}>★★★★☆ (4 Stars)</option>
+                  <option value="3" {% if user_entry and user_entry.rating == 3 %}selected{% endif %}>★★★☆☆ (3 Stars)</option>
+                  <option value="2" {% if user_entry and user_entry.rating == 2 %}selected{% endif %}>★★☆☆☆ (2 Stars)</option>
+                  <option value="1" {% if user_entry and user_entry.rating == 1 %}selected{% endif %}>★☆☆☆☆ (1 Star)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Review / Thoughts</label>
+                <textarea name="review" rows="3" placeholder="What did you think of this film?">{% if user_entry %}{{ user_entry.review }}{% endif %}</textarea>
+              </div>
+
+              <div class="form-group">
+                <label>Status</label>
+                <select name="status">
+                  <option value="watched">Watched</option>
+                  <option value="watchlist">Plan to Watch</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn">Save to Diary</button>
+            </form>
+          </div>
+
+          <!-- Add to Custom List Form -->
+          {% if user_lists %}
+            <div class="form-box">
+              <h3 style="color: var(--gold); margin-top: 0;">Add to Film Collection</h3>
+              <form action="/lists/add-movie" method="POST">
+                <input type="hidden" name="movieId" value="{{ movie._id }}">
+                <div class="form-group">
+                  <label>Select List</label>
+                  <select name="listId">
+                    {% for lst in user_lists %}
+                      <option value="{{ lst._id }}">{{ lst.title }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <button type="submit" class="btn">Add to Collection</button>
+              </form>
+            </div>
+          {% endif %}
+        {% else %}
+          <p style="margin-top: 2rem;"><a href="/login" class="btn">Sign In to Rate & Log Film</a></p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</body>
+</html>

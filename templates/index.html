@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CineDiary — Movie Watchlist & Catalogue</title>
+  <style>
+    :root { --bg: #140A0D; --card: #1F0E15; --border: #3A2029; --gold: #D4A94C; --text: #F3E9DC; --muted: #B39A9E; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+    .navbar { background: #190B10; border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-family: Georgia, serif; font-size: 1.5rem; color: var(--gold); text-decoration: none; font-weight: bold; }
+    .nav-links a { color: var(--muted); text-decoration: none; margin-left: 1.5rem; font-weight: 500; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+    .filter-bar { background: var(--card); border: 1px solid var(--border); padding: 1rem; border-radius: 12px; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 2rem; }
+    .filter-bar input, .filter-bar select { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.9rem; }
+    .filter-bar input { flex: 1; min-width: 200px; }
+    .btn { background: var(--gold); color: #140A0D; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit; transition: transform 0.2s; }
+    .card:hover { transform: translateY(-4px); border-color: var(--gold); }
+    .card img { width: 100%; height: 280px; object-fit: cover; }
+    .card-body { padding: 1rem; display: flex; flex-direction: column; flex: 1; }
+    .card-title { font-weight: bold; font-size: 1.1rem; margin: 0 0 0.4rem 0; color: var(--text); }
+    .card-meta { font-size: 0.8rem; color: var(--muted); display: flex; justify-content: space-between; margin-top: auto; }
+    .badge { background: #3A2029; color: var(--gold); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="/" class="brand">🎬 CineDiary</a>
+    <div class="nav-links">
+      <a href="/" class="active">Movies</a>
+      {% if current_user %}
+        <a href="/diary">My Diary</a>
+        <a href="/lists">Lists</a>
+        <a href="/stats">Stats</a>
+        <a href="/profile">👤 {{ current_user.name }}</a>
+        <a href="/logout">Logout</a>
+      {% else %}
+        <a href="/login" class="btn">Sign In</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="container">
+    <h1 style="font-family: Georgia, serif; color: var(--gold); margin-bottom: 0.5rem;">Explore Cinema Catalogue</h1>
+    <p style="color: var(--muted); margin-bottom: 1.5rem;">Discover movies, track ratings, and build your personal film collection.</p>
+
+    <!-- Search & Filter Form -->
+    <form action="/" method="GET" class="filter-bar">
+      <input type="text" name="search" value="{{ search }}" placeholder="Search title, director, or actor...">
+      
+      <select name="genre">
+        <option value="All">All Genres</option>
+        {% for g in genres %}
+          <option value="{{ g }}" {% if selected_genre == g %}selected{% endif %}>{{ g }}</option>
+        {% endfor %}
+      </select>
+
+      <select name="year">
+        <option value="All">All Years</option>
+        {% for y in years %}
+          <option value="{{ y }}" {% if selected_year == y|string %}selected{% endif %}>{{ y }}</option>
+        {% endfor %}
+      </select>
+
+      <button type="submit" class="btn">Filter</button>
+    </form>
+
+    <!-- Movie Catalogue Grid -->
+    <div class="grid">
+      {% for movie in movies %}
+        <a href="/movie/{{ movie._id }}" class="card">
+          <img src="{{ movie.posterUrl }}" alt="{{ movie.title }}">
+          <div class="card-body">
+            <div class="card-title">{{ movie.title }}</div>
+            <div class="card-meta">
+              <span>🗓️ {{ movie.releaseYear }}</span>
+              <span class="badge">★ {{ movie.overallRating }}</span>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+
+      {% for item in tmdb_movies %}
+        <a href="/movie-details.html?tmdbId={{ item.tmdbId }}" class="card">
+          <img src="{{ item.posterUrl }}" alt="{{ item.title }}">
+          <div class="card-body">
+            <div class="card-title">{{ item.title }}</div>
+            <div class="card-meta">
+              <span>🗓️ {{ item.releaseYear }} (Live TMDB)</span>
+              <span class="badge">★ {{ item.overallRating }}</span>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

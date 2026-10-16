@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile — CineDiary</title>
+  <style>
+    :root { --bg: #140A0D; --card: #1F0E15; --border: #3A2029; --gold: #D4A94C; --text: #F3E9DC; --muted: #B39A9E; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+    .navbar { background: #190B10; border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-family: Georgia, serif; font-size: 1.5rem; color: var(--gold); text-decoration: none; font-weight: bold; }
+    .nav-links a { color: var(--muted); text-decoration: none; margin-left: 1.5rem; font-weight: 500; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    .profile-card { background: var(--card); border: 1px solid var(--border); padding: 2rem; border-radius: 16px; margin-bottom: 2rem; }
+    .btn { background: var(--gold); color: #140A0D; border: none; padding: 0.7rem 1.4rem; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
+    input[type="text"], textarea { width: 100%; padding: 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); box-sizing: border-box; margin-bottom: 1rem; }
+    label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.4rem; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="/" class="brand">🎬 CineDiary</a>
+    <div class="nav-links">
+      <a href="/">Movies</a>
+      <a href="/diary">My Diary</a>
+      <a href="/lists">Lists</a>
+      <a href="/stats">Stats</a>
+      <a href="/profile" class="active">👤 {{ user.name }}</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="profile-card">
+      <h1 style="font-family: Georgia, serif; color: var(--gold); margin-top: 0;">User Profile</h1>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Bio:</strong> {{ user.bio or 'Film enthusiast & CineDiary member' }}</p>
+
+      <h3 style="color: var(--gold); margin-top: 2rem;">Edit Profile Information</h3>
+      <form action="/profile" method="POST">
+        <div class="form-group">
+          <label>Display Name</label>
+          <input type="text" name="name" value="{{ user.name }}" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Bio / Summary</label>
+          <textarea name="bio" rows="3">{{ user.bio }}</textarea>
+        </div>
+
+        <button type="submit" class="btn">Update Profile</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
