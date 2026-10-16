@@ -16,7 +16,7 @@
 
 ---
 
-## 📁 Course-Compliant Project Structure (CO4 & CO6)
+## 📁 Project Structure
 
 ```
 NoSQL Database Project/
@@ -27,14 +27,14 @@ NoSQL Database Project/
 ├── requirements.txt        # Python package dependencies (Flask, PyMongo, Werkzeug)
 ├── .env                    # Environment variables configuration
 │
-├── static/                 # Flask Static Files Directory (CO6)
+├── static/                 # Flask Static Files Directory
 │   ├── css/
 │   │   └── styles.css      # Core stylesheet & Light/Dark theme engine
 │   └── js/
 │       ├── api.js          # REST API communication helpers
 │       └── common.js       # Toast notifications & Theme switcher
 │
-└── templates/              # Flask Jinja2 Templates Directory (CO6)
+└── templates/              # Flask Jinja2 Templates Directory
     ├── index.html          # Movie Search & Catalogue Grid
     ├── movie_details.html  # Movie Info, Interactive 5-Star Rating & Reviews
     ├── diary.html          # Personal Movie Diary & Watchlist Filters
