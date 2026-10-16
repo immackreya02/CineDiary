@@ -2,6 +2,8 @@
 
 > A sleek, high-performance web application for film enthusiasts to curate custom movie collections, track watched films with ratings and reviews, discover global cinema live via TMDB, and inspect personal viewing habits with interactive 12-month analytics.
 
+🌐 **Live Application:** [https://cinediary.onrender.com](https://cinediary.onrender.com)  
+
 ---
 
 ## 🛠️ Technology Stack (Python Web Frameworks Project)
@@ -9,30 +11,24 @@
 | Layer | Technology |
 | :--- | :--- |
 | **Backend Framework** | Python 3, Flask (`app.py`, URL Routing, Jinja2 Templates) |
-| **Database** | MongoDB (NoSQL) via PyMongo driver |
-| **Template Engine** | Flask Jinja2 (`templates/` directory, `url_for('static', ...)` static files) |
-| **Styling & Presentation** | Vanilla CSS3 (`static/css/styles.css`), Glassmorphism UI, Light/Dark Theme |
+| **Database** | MongoDB (NoSQL) via PyMongo driver / MongoDB Atlas |
+| **Production Server** | Gunicorn WSGI (`Procfile`) |
+| **Template Engine** | Flask Jinja2 (`templates/` directory) |
+| **Styling & Presentation** | Vanilla CSS3, Glassmorphism UI, Responsive Design |
 | **External API** | The Movie Database (TMDB Live API) |
+| **Deployment** | Render Cloud Platform |
 
 ---
 
 ## 📁 Project Structure
 
 ```
-NoSQL Database Project/
-│
+CineDiary/
 ├── app.py                  # Main Flask application, URL Routing & Jinja2 Templates
-├── db.py                   # PyMongo database connection & serialization helpers
-├── utils.py                # Password hashing & email verification helpers
-├── requirements.txt        # Python package dependencies (Flask, PyMongo, Werkzeug)
-├── .env                    # Environment variables configuration
-│
-├── static/                 # Flask Static Files Directory
-│   ├── css/
-│   │   └── styles.css      # Core stylesheet & Light/Dark theme engine
-│   └── js/
-│       ├── api.js          # REST API communication helpers
-│       └── common.js       # Toast notifications & Theme switcher
+├── requirements.txt        # Python package dependencies (Flask, PyMongo, Gunicorn)
+├── Procfile                # Web worker process configuration for Render
+├── .env                    # Environment variables configuration (ignored by git)
+├── .gitignore              # Git ignore rules protecting secrets
 │
 └── templates/              # Flask Jinja2 Templates Directory
     ├── index.html          # Movie Search & Catalogue Grid
@@ -47,19 +43,8 @@ NoSQL Database Project/
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Live Application & Quick Start Guide
 
-### 1. Prerequisites
-- [Python 3.10+](https://www.python.org/)
-- [MongoDB Community Server](https://www.mongodb.com/try/download/community) running locally on port `27017`
-
-### 2. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Run the Flask Server
-```bash
-python app.py
-```
-*(Open your web browser at `http://localhost:5001` to view the application)*
+### 🌐 Access Live Website
+The application is deployed live on the cloud:
+👉 **[https://cinediary.onrender.com](https://cinediary.onrender.com)**
